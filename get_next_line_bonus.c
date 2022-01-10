@@ -6,7 +6,7 @@
 /*   By: bgoncalv <bgoncalv@student.42lausanne.ch>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/09 21:19:40 by bgoncalv          #+#    #+#             */
-/*   Updated: 2022/01/10 02:07:35 by bgoncalv         ###   ########.fr       */
+/*   Updated: 2022/01/10 02:16:46 by bgoncalv         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,19 +22,24 @@ typedef struct s_list
 	t_list	*next;
 }	t_list;
 
+static t_list	*list_init(int fd)
+{
+	t_list	*lst;
+
+	lst = malloc(sizeof(t_list));
+	if (!lst)
+		return (NULL);
+	lst->fd = fd;
+	lst->s_left = NULL;
+	lst->next = NULL;
+	lst->prev = NULL;
+	return (lst);
+}
+
 static t_list	*lfd_process(t_list *lst, int fd)
 {
 	if (!lst)
-	{
-		lst = malloc(sizeof(t_list));
-		if (!lst)
-			return (NULL);
-		lst->fd = fd;
-		lst->s_left = NULL;
-		lst->next = NULL;
-		lst->prev = NULL;
-		return (lst);
-	}
+		return (list_init(fd));
 	while (lst->next)
 	{
 		if (lst->fd == fd)
@@ -43,11 +48,8 @@ static t_list	*lfd_process(t_list *lst, int fd)
 	}
 	if (lst->fd == fd)
 		return (lst);
-	lst->next = malloc(sizeof(t_list));
-	lst->next->fd = fd;
-	lst->next->s_left = NULL;
+	lst->next = list_init(fd);
 	lst->next->prev = lst;
-	lst->next->next = NULL;
 	return (lst->next);
 }
 
